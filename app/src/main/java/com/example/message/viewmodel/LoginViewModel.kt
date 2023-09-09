@@ -1,5 +1,6 @@
 package com.example.message.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -38,6 +39,8 @@ class LoginViewModel : ViewModel() {
                     _loginResult.value = true
                     Temp.currentUser = auth.currentUser
                     val publicKey = Temp.keyPair.first
+
+                    Log.d(TAG, "${Temp.keyPair.first}\n${Temp.keyPair.second}")
                     viewModelScope.launch(Dispatchers.IO) {
                         saveUser(
                             User(

@@ -18,6 +18,11 @@ class MessageAdapter(
     private val uid: String
 ) : ListAdapter<Message, RecyclerView.ViewHolder>(DiffCallback) {
 
+    private val privateKey: Pair<BigInteger, BigInteger> = Pair(
+        Temp.keyPair.second.first,
+        Temp.keyPair.second.second
+    )
+
     private val SENT_VIEW_TYPE = 1
     private val RETRIEVED_VIEW_TYPE = 2
 
@@ -70,24 +75,20 @@ class MessageAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val message = getItem(position)
+        Log.d(this.toString(), "${message.text}")
         when (holder) {
             is ItemSentViewHolder -> {
                 Temp.messageTemp?.let {
                     message.text = Temp.messageTemp
                 }
-
                 holder.bind(message)
-
             }
 
             is ItemRetrievedViewHolder -> {
-
+                val text = message.text.toString()
                 val textBigInteger = RSA.decrypt(
-                    BigInteger(message.text),
-                    Pair(
-                        Temp.keyPair.second.first,
-                        Temp.keyPair.second.second
-                    )
+                    BigInteger(text),
+                    privateKey
                 )
                 Log.d(this.toString(), "$textBigInteger")
 
@@ -104,7 +105,6 @@ class MessageAdapter(
         else
             RETRIEVED_VIEW_TYPE
     }
-
     companion object DiffCallback : DiffUtil.ItemCallback<Message>() {
         override fun areItemsTheSame(oldItem: Message, newItem: Message): Boolean {
             return oldItem.senderID == newItem.senderID

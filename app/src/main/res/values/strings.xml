@@ -8,4 +8,5 @@
     <string name="hint_edit_text">Nhắn tin</string>
     <string name="label_home_fragment">Danh sách bạn bè</string>
     <string name="label_chatroom_fragment">Trò chuyện</string>
+    <string name="text_notification">Vui lòng nhập tin nhắn</string>
 </resources>

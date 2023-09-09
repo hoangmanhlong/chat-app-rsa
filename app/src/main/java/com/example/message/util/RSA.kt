@@ -86,7 +86,7 @@ object RSA {
 // Convert text from UTF-8 to BigInteger
 fun utf8ToBigInteger(text: String): BigInteger {
     val utf8Bytes = text.toByteArray(StandardCharsets.UTF_8)
-    return BigInteger(utf8Bytes)
+    return BigInteger(1, utf8Bytes) // Set the first bit to 0 to avoid negative numbers
 }
 
 // Convert text from BigInteger to utf-8

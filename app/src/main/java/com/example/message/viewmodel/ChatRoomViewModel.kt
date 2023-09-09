@@ -15,7 +15,6 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import java.math.BigInteger
 
 class ChatRoomViewModel : ViewModel() {
 
@@ -66,17 +65,10 @@ class ChatRoomViewModel : ViewModel() {
         text: String
     ) {
 
-        val pair = Pair(
-            BigInteger(Temp.retriever?.publicKey?.first),
-            BigInteger(Temp.retriever?.publicKey?.second)
-        )
-        Log.d(TAG, "${Temp.retriever?.publicKey?.first}\n${Temp.retriever?.publicKey?.second}")
-
-        val textEncrypted =
-            RSA.encrypt(
-                utf8ToBigInteger(text),
-                pair
-            ).toString()
+        val textEncrypted = RSA.encrypt(
+            utf8ToBigInteger(text),
+            Temp.retrieverPublicKey!!
+        ).toString()
 
         messagesRef
             .push()
@@ -87,6 +79,8 @@ class ChatRoomViewModel : ViewModel() {
             )
     }
 
+    fun checkInput(message: String): Boolean = message.isBlank()
+
     companion object {
         const val TAG = "ChatRoomViewModel"
     }
@@ -94,7 +88,7 @@ class ChatRoomViewModel : ViewModel() {
 
 class ChatRoomViewModelFactory : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if(modelClass.isAssignableFrom(ChatRoomViewModel::class.java))
+        if (modelClass.isAssignableFrom(ChatRoomViewModel::class.java))
             @Suppress("UNCHECKED_CAST")
             return ChatRoomViewModel() as T
         throw IllegalArgumentException("Unknown ViewModel class")

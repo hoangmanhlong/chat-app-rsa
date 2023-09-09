@@ -39,18 +39,19 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val adapter = UserAdapter {
+            Temp.retriever = it
+            Log.d(this.toString(), it.toString())
             var uid = it.uid ?: return@UserAdapter
                 val action = HomeFragmentDirections
                     .actionHomeFragmentToChatFragment(uid)
                 findNavController().navigate(action)
-            Temp.retriever = it
-            Log.d("HomeFragment", Temp.retriever.toString())
+            Log.d("HomeFragment", "${Temp.retriever!!.email}")
         }
 
         binding.recyclerViewUsers.adapter = adapter
 
-        viewModel.users.observe(this@HomeFragment.viewLifecycleOwner) {
-            it?.let {
+        viewModel.users.observe(this@HomeFragment.viewLifecycleOwner) { items ->
+             items?.let {
                 adapter.submitList(it)
             }
         }
